@@ -1,0 +1,143 @@
+Database:
+use recruitment;
+
+Applicant:
+db.applicant.insertMany([
+    { APPNO: 55555, NAME: 'RAHUL', DOB: new Date('2006-03-12'), GENDER: 1, SPLRES: 2 },
+    { APPNO: 55556, NAME: 'JEEVA', DOB: new Date('2006-04-10'), GENDER: 2, SPLRES: 2 },
+    { APPNO: 55557, NAME: 'SAM', DOB: new Date('2006-05-15'), GENDER: 2, SPLRES: 2 },
+    { APPNO: 55558, NAME: 'KAVI', DOB: new Date('2006-06-20'), GENDER: 1, SPLRES: 2 },
+    { APPNO: 55559, NAME: 'PRIYA', DOB: new Date('2006-07-25'), GENDER: 1, SPLRES: 2 },
+    { APPNO: 55560, NAME: 'ANU', DOB: new Date('2006-08-30'), GENDER: 2, SPLRES: 2 },
+    { APPNO: 55561, NAME: 'NANDHINI', DOB: new Date('2006-09-05'), GENDER: 2, SPLRES: 2 },
+    { APPNO: 55562, NAME: 'ARUN', DOB: new Date('2006-10-10'), GENDER: 1, SPLRES: 2 },
+    { APPNO: 55563, NAME: 'KAVIYA', DOB: new Date('2006-11-15'), GENDER: 2, SPLRES: 2 },
+    { APPNO: 55564, NAME: 'VIKRAM', DOB: new Date('2006-12-20'), GENDER: 1, SPLRES: 2 },
+    { APPNO: 55565, NAME: 'MEENA', DOB: new Date('2009-01-25'), GENDER: 2, SPLRES: 2 },
+    { APPNO: 55566, NAME: 'RAJAN', DOB: new Date('2009-01-30'), GENDER: 1, SPLRES: 2 },
+    { APPNO: 55567, NAME: 'GITA', DOB: new Date('2009-03-05'), GENDER: 2, SPLRES: 2 },
+    { APPNO: 55568, NAME: 'SHANTHI', DOB: new Date('2009-04-10'), GENDER: 1, SPLRES: 2 },
+    { APPNO: 55569, NAME: 'VANI', DOB: new Date('2009-05-15'), GENDER: 2, SPLRES: 1 },
+    { APPNO: 55570, NAME: 'SURIYA', DOB: new Date('2009-06-20'), GENDER: 1, SPLRES: 1 },
+    { APPNO: 55571, NAME: 'DIVYA', DOB: new Date('2009-07-25'), GENDER: 2, SPLRES: 1 },
+    { APPNO: 55572, NAME: 'KUMAR', DOB: new Date('2009-08-30'), GENDER: 1, SPLRES: 1 },
+    { APPNO: 55573, NAME: 'VISHNU', DOB: new Date('2009-09-05'), GENDER: 2, SPLRES: 1 },
+    { APPNO: 55574, NAME: 'SREE', DOB: new Date('2009-10-10'), GENDER: 2, SPLRES: 1 }
+]);
+
+Random & Populating Random Numbers:
+db.random.createIndex({ RND: 1 }, { unique: true });
+
+function populateRnd() {
+    var applicants = db.applicant.find().toArray();
+    applicants.forEach(function(applicant) {
+        var rnd;
+        do {
+            rnd = Math.floor(Math.random() * 10000000);
+        } while (db.random.findOne({ RND: rnd }));
+        db.random.insertOne({ APPNO: applicant.APPNO, NAME: applicant.NAME, RND: rnd });
+    });
+}
+
+populateRnd();
+
+Test:
+db.test.insertMany([
+    { APPNO: 55555, NAME: 'RAHUL', TEST: 80 },
+    { APPNO: 55556, NAME: 'JEEVA', TEST: 77 },
+    { APPNO: 55557, NAME: 'SAM', TEST: 85 },
+    { APPNO: 55558, NAME: 'KAVI', TEST: 78 },
+    { APPNO: 55559, NAME: 'PRIYA', TEST: 82 },
+    { APPNO: 55560, NAME: 'ANU', TEST: 88 },
+    { APPNO: 55561, NAME: 'NANDHINI', TEST: 74 },
+    { APPNO: 55562, NAME: 'ARUN', TEST: 81 },
+    { APPNO: 55563, NAME: 'KAVIYA', TEST: 79 },
+    { APPNO: 55564, NAME: 'VIKRAM', TEST: 83 },
+    { APPNO: 55565, NAME: 'MEENA', TEST: 76 },
+    { APPNO: 55566, NAME: 'RAJAN', TEST: 89 },
+    { APPNO: 55567, NAME: 'GITA', TEST: 84 },
+    { APPNO: 55568, NAME: 'SHANTHI', TEST: 77 },
+    { APPNO: 55569, NAME: 'VANI', TEST: 80 },
+    { APPNO: 55570, NAME: 'SURIYA', TEST: 75 },
+    { APPNO: 55571, NAME: 'DIVYA', TEST: 88 },
+    { APPNO: 55572, NAME: 'KUMAR', TEST: 82 },
+    { APPNO: 55573, NAME: 'VISHNU', TEST: 79 },
+    { APPNO: 55574, NAME: 'SREE', TEST: 85 }
+]);
+
+Update Test in Applicant:
+db.applicant.aggregate([
+    { $lookup: { from: "test", localField: "APPNO", foreignField: "APPNO", as: "test" } },
+    { $unwind: "$test" },
+    { $set: { TEST: "$test.TEST" } },
+    { $merge: { into: "applicant", whenMatched: "merge" } }
+]);
+
+Interview:
+db.interview.insertMany([
+    { APPNO: 55555, NAME: 'RAHUL', INTERVIEW: 85 },
+    { APPNO: 55556, NAME: 'JEEVA', INTERVIEW: 78 },
+    { APPNO: 55557, NAME: 'SAM', INTERVIEW: 80 },
+    { APPNO: 55558, NAME: 'KAVI', INTERVIEW: 82 },
+    { APPNO: 55559, NAME: 'PRIYA', INTERVIEW: 79 },
+    { APPNO: 55560, NAME: 'ANU', INTERVIEW: 88 },
+    { APPNO: 55561, NAME: 'NANDHINI', INTERVIEW: 75 },
+    { APPNO: 55562, NAME: 'ARUN', INTERVIEW: 81 },
+    { APPNO: 55563, NAME: 'KAVIYA', INTERVIEW: 83 },
+    { APPNO: 55564, NAME: 'VIKRAM', INTERVIEW: 77 },
+    { APPNO: 55565, NAME: 'MEENA', INTERVIEW: 85 },
+    { APPNO: 55566, NAME: 'RAJAN', INTERVIEW: 76 },
+    { APPNO: 55567, NAME: 'GITA', INTERVIEW: 79 },
+    { APPNO: 55568, NAME: 'SHANTHI', INTERVIEW: 82 },
+    { APPNO: 55569, NAME: 'VANI', INTERVIEW: 80 },
+    { APPNO: 55570, NAME: 'SURIYA', INTERVIEW: 78 },
+    { APPNO: 55571, NAME: 'DIVYA', INTERVIEW: 84 },
+    { APPNO: 55572, NAME: 'KUMAR', INTERVIEW: 83 },
+    { APPNO: 55573, NAME: 'VISHNU', INTERVIEW: 77 },
+    { APPNO: 55574, NAME: 'SREE', INTERVIEW: 86 }
+]);
+
+Update Interview in Applicant:
+db.applicant.aggregate([
+    { $lookup: { from: "interview", localField: "APPNO", foreignField: "APPNO", as: "interview" } },
+    { $unwind: "$interview" },
+    { $set: { INTERVIEW: "$interview.INTERVIEW" } },
+    { $merge: { into: "applicant", whenMatched: "merge" } }
+]);
+
+Update Aggr in Applicant:
+db.applicant.updateMany(
+    {},
+    [
+        { $set: { AGGR: { $add: [{ $multiply: ["$TEST", 0.6] }, { $multiply: ["$INTERVIEW", 0.4] }] } } }
+    ]
+);
+
+Update Rank in Applicant:
+db.applicant.aggregate([
+    { $sort: { AGGR: -1 } },
+    { $group: { _id: null, ranks: { $push: "$$ROOT" } } },
+    { $unwind: { path: "$ranks", includeArrayIndex: "rank" } },
+    { $set: { "ranks.RANK": { $add: ["$rank", 1] } } },
+    { $replaceRoot: { newRoot: "$ranks" } },
+    { $merge: { into: "applicant", whenMatched: "merge" } }
+]);
+
+Generate Special Rank in Applicant:
+db.applicant.aggregate([
+    { $match: { SPLRES: 1 } },
+    { $sort: { AGGR: -1, TEST: -1, INTERVIEW: -1, DOB: -1, RND: -1 } },
+    { $group: { _id: null, ranks: { $push: "$$ROOT" } } },
+    { $unwind: { path: "$ranks", includeArrayIndex: "splrank" } },
+    { $set: { "ranks.SPLRANK": { $add: ["$splrank", 1] } } },
+    { $replaceRoot: { newRoot: "$ranks" } },
+    { $merge: { into: "applicant", whenMatched: "merge" } }
+]);
+
+Update Random in Applicant:
+db.applicant.aggregate([
+    { $lookup: { from: "random", localField: "APPNO", foreignField: "APPNO", as: "random" } },
+    { $unwind: "$random" },
+    { $set: { RND: "$random.RND" } },
+    { $merge: { into: "applicant", whenMatched: "merge" } }
+]);

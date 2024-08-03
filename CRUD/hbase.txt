@@ -1,0 +1,53 @@
+Create namespace for Employee Details
+create_namespace 'employee_details'
+
+Create Employee table
+create 'employee_details:Employee', 'personal_data', 'professional_data'
+
+Insertion of Data:
+# Insert data for Employee 1
+put 'employee_details:Employee', 'emp1', 'personal_data:name', 'John Doe'
+put 'employee_details:Employee', 'emp1', 'personal_data:age', '35'
+put 'employee_details:Employee', 'emp1', 'professional_data:designation', 'Software Engineer'
+
+# Insert data for Employee 2
+put 'employee_details:Employee', 'emp2', 'personal_data:name', 'Jane Smith'
+put 'employee_details:Employee', 'emp2', 'personal_data:age', '28'
+put 'employee_details:Employee', 'emp2', 'professional_data:designation', 'Data Scientist'
+
+# Insert data for Employee 3
+put 'employee_details:Employee', 'emp3', 'personal_data:name', 'Michael Johnson'
+put 'employee_details:Employee', 'emp3', 'personal_data:age', '42'
+put 'employee_details:Employee', 'emp3', 'professional_data:designation', 'Project Manager'
+
+# Insert data for Employee 4
+put 'employee_details:Employee', 'emp4', 'personal_data:name', 'Emily Brown'
+put 'employee_details:Employee', 'emp4', 'personal_data:age', '31'
+put 'employee_details:Employee', 'emp4', 'professional_data:designation', 'Software Developer'
+
+# Insert data for Employee 5
+put 'employee_details:Employee', 'emp5', 'personal_data:name', 'David Lee'
+put 'employee_details:Employee', 'emp5', 'personal_data:age', '29'
+put 'employee_details:Employee', 'emp5', 'professional_data:designation', 'Business Analyst'
+
+Scan all rows in the 'employee_details:Employee' table:
+scan 'employee_details:Employee'
+
+Read data for Employee 1:
+get 'employee_details:Employee', 'emp1'
+
+Update age for Employee 3:
+put 'employee_details:Employee', 'emp3', 'personal_data:age', '43'
+
+Read updated data for Employee 3:
+get 'employee_details:Employee', 'emp3'
+
+Delete designation for Employee 2:
+delete 'employee_details:Employee', 'emp2', 'professional_data:designation'
+
+Read updated data for Employee 2:
+get 'employee_details:Employee', 'emp2'
+
+Disable and drop the Employee table (If needed):
+disable 'employee_details:Employee'
+drop 'employee_details:Employee'

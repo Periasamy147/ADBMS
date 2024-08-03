@@ -1,0 +1,48 @@
+Creation of Nodes:
+CREATE (ram:Person {name: 'Ram', age: 32, city: 'Chennai'})
+CREATE (sam:Person {name: 'Sam', age: 28, city: 'Coimbatore'})
+CREATE (ravi:Person {name: 'Ravi', age: 30, city: 'Salem'})
+CREATE (lakshmi:Person {name: 'Lakshmi', age: 25, city: 'Madurai'})
+CREATE (arun:Person {name: 'Arun', age: 27, city: 'Ooty'})
+
+Creating Relations:
+MATCH (ram:Person {name: 'Ram'}), (sam:Person {name: 'Sam'})
+CREATE (ram)-[:FRIEND]->(sam)
+
+MATCH (ram:Person {name: 'Ram'}), (ravi:Person {name: 'Ravi'})
+CREATE (ram)-[:KNOWS]->(ravi)
+
+MATCH (sam:Person {name: 'Sam'}), (lakshmi:Person {name: 'Lakshmi'})
+CREATE (sam)-[:FRIEND]->(lakshmi)
+
+MATCH (ravi:Person {name: 'Ravi'}), (arun:Person {name: 'Arun'})
+CREATE (ravi)-[:FRIEND]->(arun)
+
+MATCH (lakshmi:Person {name: 'Lakshmi'}), (arun:Person {name: 'Arun'})
+CREATE (lakshmi)-[:FRIEND]->(arun)
+
+View:
+MATCH (n:Person) RETURN n
+
+Read Specific Relations:
+MATCH (ram:Person {name: 'Ram'})-[:FRIEND]->(sam:Person) RETURN ram, sam
+MATCH (ravi:Person {name: 'Ravi'})-[:FRIEND]->(lakshmi:Person) RETURN ravi, lakshmi
+
+Update a Node:
+MATCH (ravi:Person {name: 'Ravi'})
+SET ravi.age = 31
+MATCH (arun:Person {name: 'Arun'})
+SET arun.city = 'Erode'
+
+Delete a specific Relations:
+MATCH (sam:Person {name: 'Sam'})-[r:FRIEND]->(lakshmi:Person {name: 'Lakshmi'}) DELETE r
+MATCH (lakshmi:Person {name: 'Lakshmi'})-[r:FRIEND]->(arun:Person {name: 'Arun'}) DELETE r
+
+Delete a Node without Relation:
+MATCH (lakshmi:Person {name: 'Lakshmi'}) DELETE lakshmi
+
+Delete a Node with Rlations:
+MATCH (ram:Person {name: 'Ravi'}) DETACH DELETE ram
+MATCH (sam:Person {name: 'Sam'}) DETACH DELETE sam
+MATCH (ravi:Person {name: 'Ravi'}) DETACH DELETE ravi
+MATCH (arun:Person {name: 'Arun'}) DETACH DELETE arun

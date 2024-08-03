@@ -1,0 +1,101 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Simple Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body */
+body {
+  background: #f0f2f5;
+  color: #333;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Form Wrapper */
+.form-wrapper {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 5em auto;
+  padding: 2em;
+  max-width: 400px;
+}
+
+h1 {
+  color: #007bff;
+  font-size: 2em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+/* Form */
+form {
+  padding: 0;
+}
+
+.form-item {
+  margin-bottom: 1.5em;
+  width: 100%;
+}
+
+.form-item input {
+  background: #f8f9fa;
+  border: 2px solid #ced4da;
+  border-radius: 4px;
+  color: #495057;
+  font-size: 1em;
+  padding: 0.75em 1em;
+  transition: border-color 0.3s;
+  width: 100%;
+}
+
+.form-item input:focus {
+  border-color: #80bdff;
+  outline: none;
+}
+
+/* Button Panel */
+.button-panel {
+  margin-top: 2em;
+  width: 100%;
+}
+
+.button-panel .button {
+  background: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 0.75em 1em;
+  text-align: center;
+  text-transform: uppercase;
+  transition: background 0.3s ease-in-out;
+  width: 100%;
+}
+
+.button:hover {
+  background: #0056b3;
+}
+
+/* Form Footer */
+.form-footer {
+  font-size: 1em;
+  margin-top: 2em;
+  text-align: center;
+}
+
+.form-footer a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.form-footer a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}

@@ -1,0 +1,172 @@
+---------------------------------------------------------------------------------------
+psql-xml
+---------------------------------------------------------------------------------------
+
+-- Create Database
+CREATE DATABASE shopping_mart_db;
+
+-- Connect to the database
+\c shopping_mart_db
+
+-- Create Tables
+CREATE TABLE products (
+    ProductID SERIAL PRIMARY KEY,
+    ProductData XML
+);
+
+CREATE TABLE customers (
+    CustomerID SERIAL PRIMARY KEY,
+    CustomerData XML
+);
+
+CREATE TABLE employees (
+    EmployeeID SERIAL PRIMARY KEY,
+    EmployeeData XML
+);
+
+-- Insert Records
+INSERT INTO products (ProductData) VALUES 
+    (XMLPARSE(DOCUMENT '<Product><Name>Apple</Name><Category>Fruit</Category><Price>0.5</Price><Stock>100</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Milk</Name><Category>Dairy</Category><Price>1.2</Price><Stock>50</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Bread</Name><Category>Bakery</Category><Price>2.0</Price><Stock>30</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Chicken</Name><Category>Meat</Category><Price>5.0</Price><Stock>20</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Broccoli</Name><Category>Vegetable</Category><Price>1.5</Price><Stock>40</Stock></Product>'));
+
+INSERT INTO customers (CustomerData) VALUES 
+    (XMLPARSE(DOCUMENT '<Customer><Name>Arun Kumar</Name><Age>30</Age><Address>123 Oak Street</Address></Customer>')),
+    (XMLPARSE(DOCUMENT '<Customer><Name>Deepa Rani</Name><Age>25</Age><Address>456 Pine Avenue</Address></Customer>')),
+    (XMLPARSE(DOCUMENT '<Customer><Name>Vijay Anand</Name><Age>35</Age><Address>789 Maple Road</Address></Customer>')),
+    (XMLPARSE(DOCUMENT '<Customer><Name>Priya Sharma</Name><Age>40</Age><Address>1010 Elm Lane</Address></Customer>'));
+
+INSERT INTO employees (EmployeeData) VALUES 
+    (XMLPARSE(DOCUMENT '<Employee><Name>Ravi</Name><Salary>50000</Salary><Gender>M</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Ram</Name><Salary>60000</Salary><Gender>M</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Sam</Name><Salary>70000</Salary><Gender>M</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Anbu</Name><Salary>80000</Salary><Gender>F</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Mani</Name><Salary>75000</Salary><Gender>M</Gender></Employee>'));
+
+-- Select All Records
+SELECT * FROM products;
+SELECT * FROM customers;
+SELECT * FROM employees;
+
+-- Specific Data Extraction
+SELECT 
+    (xpath('/Product/Name/text()', ProductData))[1] AS Name,
+    (xpath('/Product/Category/text()', ProductData))[1] AS Category
+FROM products;
+
+SELECT 
+    (xpath('/Customer/Name/text()', CustomerData))[1] AS Name,
+    (xpath('/Customer/Age/text()', CustomerData))[1] AS Age
+FROM customers;
+
+SELECT 
+    (xpath('/Employee/Name/text()', EmployeeData))[1] AS Name,
+    (xpath('/Employee/Salary/text()', EmployeeData))[1] AS Salary
+FROM employees;
+
+-- Update Records
+UPDATE products 
+SET ProductData = XML '<Product><Name>Milk</Name><Category>Dairy</Category><Price>1.3</Price><Stock>60</Stock></Product>' 
+WHERE ProductID = 2;
+
+UPDATE customers 
+SET CustomerData = XML '<Customer><Name>Arun Kumar</Name><Age>31</Age><Address>123 Oak Street</Address></Customer>' 
+WHERE CustomerID = 1;
+
+UPDATE employees 
+SET EmployeeData = XML '<Employee><Name>Ravi</Name><Salary>55000</Salary><Gender>M</Gender></Employee>' 
+WHERE EmployeeID = 1;
+
+-- Delete Records
+DELETE FROM products WHERE ProductID = 3;
+
+DELETE FROM customers WHERE CustomerID = 2;
+
+DELETE FROM employees WHERE EmployeeID = 3;
+
+-- Aggregate Functions
+SELECT 
+    AVG((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS average_salary,
+    SUM((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS total_salary,
+    MIN((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS min_salary,
+    MAX((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS max_salary,
+    COUNT(*) AS total_employees
+FROM employees;
+
+-- Group By
+SELECT 
+    (xpath('/Employee/Gender/text()', EmployeeData))[1]::text AS Gender,
+    COUNT(*) AS Count
+FROM employees
+GROUP BY (xpath('/Employee/Gender/text()', EmployeeData))[1]::text;
+
+-- Joins
+SELECT 
+    c.CustomerData,
+    e.EmployeeData
+FROM customers c
+INNER JOIN employees e ON c.CustomerID = e.EmployeeID;
+
+SELECT 
+    p.ProductData,
+    c.CustomerData
+FROM products p
+LEFT JOIN customers c ON p.ProductID = c.CustomerID;
+
+SELECT 
+    e.EmployeeData,
+    c.CustomerData
+FROM employees e
+RIGHT JOIN customers c ON e.EmployeeID = c.CustomerID;
+
+SELECT 
+    e.EmployeeData,
+    p.ProductData
+FROM employees e
+FULL OUTER JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    LEFT JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    RIGHT JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    FULL OUTER JOIN products p ON e.EmployeeID = p.ProductID;

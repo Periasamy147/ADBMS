@@ -1,0 +1,6 @@
+{
+    "name": "periasamy/php-mongodb",
+    "require": {
+        "mongodb/mongodb": "^1.19"
+    }
+}

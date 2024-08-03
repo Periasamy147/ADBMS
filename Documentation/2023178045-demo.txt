@@ -1,0 +1,681 @@
+Cassandra:
+----------
+
+Create Keyspace:
+CREATE KEYSPACE library
+WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+USE library;
+
+Create Table:
+CREATE TABLE books (
+    id UUID PRIMARY KEY,
+    title TEXT,
+    author TEXT,
+    published_date DATE
+);
+
+Insert Data:
+INSERT INTO books (id, title, author, published_date) VALUES (now(), 'To Kill a Mockingbird', 'Harper Lee', '1960-07-11');
+INSERT INTO books (id, title, author, published_date) VALUES (now(), '1984', 'George Orwell', '1949-06-08');
+INSERT INTO books (id, title, author, published_date) VALUES (now(), 'The Great Gatsby', 'F. Scott Fitzgerald', '1925-04-10');
+INSERT INTO books (id, title, author, published_date) VALUES (now(), 'One Hundred Years of Solitude', 'Gabriel Garcia Marquez', '1967-06-05');
+INSERT INTO books (id, title, author, published_date) VALUES (now(), 'Pride and Prejudice', 'Jane Austen', '1813-01-28');
+INSERT INTO books (id, title, author, published_date) VALUES (now(), 'The Catcher in the Rye', 'J.D. Salinger', '1951-07-16');
+
+Query Data:
+SELECT * FROM books;
+
+Update Data:
+UPDATE books SET author = 'George Orwell Revised' WHERE id = <id_of_the_book>;
+
+Delete Data:
+DELETE FROM books WHERE id = <id_of_the_book>;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Cypher:
+-------
+
+Creation of Nodes:
+CREATE (ram:Person {name: 'Ram', age: 32, city: 'Chennai'})
+CREATE (sam:Person {name: 'Sam', age: 28, city: 'Coimbatore'})
+CREATE (ravi:Person {name: 'Ravi', age: 30, city: 'Salem'})
+CREATE (lakshmi:Person {name: 'Lakshmi', age: 25, city: 'Madurai'})
+CREATE (arun:Person {name: 'Arun', age: 27, city: 'Ooty'})
+
+Creating Relations:
+MATCH (ram:Person {name: 'Ram'}), (sam:Person {name: 'Sam'})
+CREATE (ram)-[:FRIEND]->(sam)
+
+MATCH (ram:Person {name: 'Ram'}), (ravi:Person {name: 'Ravi'})
+CREATE (ram)-[:KNOWS]->(ravi)
+
+MATCH (sam:Person {name: 'Sam'}), (lakshmi:Person {name: 'Lakshmi'})
+CREATE (sam)-[:FRIEND]->(lakshmi)
+
+MATCH (ravi:Person {name: 'Ravi'}), (arun:Person {name: 'Arun'})
+CREATE (ravi)-[:FRIEND]->(arun)
+
+MATCH (lakshmi:Person {name: 'Lakshmi'}), (arun:Person {name: 'Arun'})
+CREATE (lakshmi)-[:FRIEND]->(arun)
+
+View:
+MATCH (n:Person) RETURN n
+
+Read Specific Relations:
+MATCH (ram:Person {name: 'Ram'})-[:FRIEND]->(sam:Person) RETURN ram, sam
+MATCH (ravi:Person {name: 'Ravi'})-[:FRIEND]->(lakshmi:Person) RETURN ravi, lakshmi
+
+Update a Node:
+MATCH (ravi:Person {name: 'Ravi'})
+SET ravi.age = 31
+MATCH (arun:Person {name: 'Arun'})
+SET arun.city = 'Erode'
+
+Delete a specific Relations:
+MATCH (sam:Person {name: 'Sam'})-[r:FRIEND]->(lakshmi:Person {name: 'Lakshmi'}) DELETE r
+MATCH (lakshmi:Person {name: 'Lakshmi'})-[r:FRIEND]->(arun:Person {name: 'Arun'}) DELETE r
+
+Delete a Node without Relation:
+MATCH (lakshmi:Person {name: 'Lakshmi'}) DELETE lakshmi
+
+Delete a Node with Rlations:
+MATCH (ram:Person {name: 'Ravi'}) DETACH DELETE ram
+MATCH (sam:Person {name: 'Sam'}) DETACH DELETE sam
+MATCH (ravi:Person {name: 'Ravi'}) DETACH DELETE ravi
+MATCH (arun:Person {name: 'Arun'}) DETACH DELETE arun
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+HBase:
+------
+
+Create namespace for Employee Details
+create_namespace 'employee_details'
+
+Create Employee table
+create 'employee_details:Employee', 'personal_data', 'professional_data'
+
+Insertion of Data:
+# Insert data for Employee 1
+put 'employee_details:Employee', 'emp1', 'personal_data:name', 'John Doe'
+put 'employee_details:Employee', 'emp1', 'personal_data:age', '35'
+put 'employee_details:Employee', 'emp1', 'professional_data:designation', 'Software Engineer'
+
+# Insert data for Employee 2
+put 'employee_details:Employee', 'emp2', 'personal_data:name', 'Jane Smith'
+put 'employee_details:Employee', 'emp2', 'personal_data:age', '28'
+put 'employee_details:Employee', 'emp2', 'professional_data:designation', 'Data Scientist'
+
+# Insert data for Employee 3
+put 'employee_details:Employee', 'emp3', 'personal_data:name', 'Michael Johnson'
+put 'employee_details:Employee', 'emp3', 'personal_data:age', '42'
+put 'employee_details:Employee', 'emp3', 'professional_data:designation', 'Project Manager'
+
+# Insert data for Employee 4
+put 'employee_details:Employee', 'emp4', 'personal_data:name', 'Emily Brown'
+put 'employee_details:Employee', 'emp4', 'personal_data:age', '31'
+put 'employee_details:Employee', 'emp4', 'professional_data:designation', 'Software Developer'
+
+# Insert data for Employee 5
+put 'employee_details:Employee', 'emp5', 'personal_data:name', 'David Lee'
+put 'employee_details:Employee', 'emp5', 'personal_data:age', '29'
+put 'employee_details:Employee', 'emp5', 'professional_data:designation', 'Business Analyst'
+
+Scan all rows in the 'employee_details:Employee' table:
+scan 'employee_details:Employee'
+
+Read data for Employee 1:
+get 'employee_details:Employee', 'emp1'
+
+Update age for Employee 3:
+put 'employee_details:Employee', 'emp3', 'personal_data:age', '43'
+
+Read updated data for Employee 3:
+get 'employee_details:Employee', 'emp3'
+
+Delete designation for Employee 2:
+delete 'employee_details:Employee', 'emp2', 'professional_data:designation'
+
+Read updated data for Employee 2:
+get 'employee_details:Employee', 'emp2'
+
+Disable and drop the Employee table (If needed):
+disable 'employee_details:Employee'
+drop 'employee_details:Employee'
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Hive:
+-----
+
+Create Database:
+CREATE DATABASE IF NOT EXISTS library_db;
+USE library_db;
+
+Create Table:
+CREATE TABLE IF NOT EXISTS books (
+    id INT,
+    title STRING,
+    author STRING,
+    year INT,
+    genre STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+Insert Records:
+INSERT INTO TABLE books VALUES 
+    (1, '1984', 'George Orwell', 1949, 'Dystopian'),
+    (2, 'To Kill a Mockingbird', 'Harper Lee', 1960, 'Fiction'),
+    (3, 'The Great Gatsby', 'F. Scott Fitzgerald', 1925, 'Classic'),
+    (4, 'Programming in C', 'K. KEERTHIVAASAN', 2024, 'Educational'),
+    (5, 'Naruto', 'S. ASHISH', 2022, 'Comics');
+
+Select All Records:
+SELECT * FROM books;
+
+Update Records:
+INSERT OVERWRITE TABLE books
+SELECT 
+    id,
+    title,
+    author,
+    CASE
+        WHEN id = 1 THEN 1955
+        ELSE year
+    END AS year,
+    genre
+FROM books;
+
+Delete Records:
+INSERT OVERWRITE TABLE books
+SELECT * FROM books WHERE id != 2;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Oracle-xml:
+-----------
+
+CREATE TABLE products (
+    ProductID NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    ProductData XMLTYPE
+);
+
+CREATE TABLE customers (
+    CustomerID NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    CustomerData XMLTYPE
+);
+
+CREATE TABLE employees (
+    EmployeeID NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    EmployeeData XMLTYPE
+);
+
+Product:
+INSERT INTO products (ProductData) VALUES 
+    (XMLType('<Product><Name>Apple</Name><Category>Fruit</Category><Price>0.5</Price><Stock>100</Stock></Product>'));
+
+INSERT INTO products (ProductData) VALUES 
+    (XMLType('<Product><Name>Milk</Name><Category>Dairy</Category><Price>1.2</Price><Stock>50</Stock></Product>'));
+
+INSERT INTO products (ProductData) VALUES 
+    (XMLType('<Product><Name>Bread</Name><Category>Bakery</Category><Price>2.0</Price><Stock>30</Stock></Product>'));
+
+INSERT INTO products (ProductData) VALUES 
+    (XMLType('<Product><Name>Chicken</Name><Category>Meat</Category><Price>5.0</Price><Stock>20</Stock></Product>'));
+
+INSERT INTO products (ProductData) VALUES 
+    (XMLType('<Product><Name>Broccoli</Name><Category>Vegetable</Category><Price>1.5</Price><Stock>40</Stock></Product>'));
+
+
+Customer:
+INSERT INTO customers (CustomerData) VALUES 
+    (XMLType('<Customer><Name>Arun Kumar</Name><Age>30</Age><Address>123 Oak Street</Address></Customer>'));
+
+INSERT INTO customers (CustomerData) VALUES 
+    (XMLType('<Customer><Name>Deepa Rani</Name><Age>25</Age><Address>456 Pine Avenue</Address></Customer>'));
+
+INSERT INTO customers (CustomerData) VALUES 
+    (XMLType('<Customer><Name>Vijay Anand</Name><Age>35</Age><Address>789 Maple Road</Address></Customer>'));
+
+INSERT INTO customers (CustomerData) VALUES 
+    (XMLType('<Customer><Name>Priya Sharma</Name><Age>40</Age><Address>1010 Elm Lane</Address></Customer>'));
+
+Employee:
+INSERT INTO employees (EmployeeData) VALUES 
+    (XMLType('<Employee><Name>Ravi</Name><Salary>50000</Salary><Gender>M</Gender></Employee>'));
+
+INSERT INTO employees (EmployeeData) VALUES 
+    (XMLType('<Employee><Name>Ram</Name><Salary>60000</Salary><Gender>M</Gender></Employee>'));
+
+INSERT INTO employees (EmployeeData) VALUES 
+    (XMLType('<Employee><Name>Sam</Name><Salary>70000</Salary><Gender>M</Gender></Employee>'));
+
+INSERT INTO employees (EmployeeData) VALUES 
+    (XMLType('<Employee><Name>Anbu</Name><Salary>80000</Salary><Gender>F</Gender></Employee>'));
+
+INSERT INTO employees (EmployeeData) VALUES 
+    (XMLType('<Employee><Name>Mani</Name><Salary>75000</Salary><Gender>M</Gender></Employee>'));
+
+
+Select All Records:
+SELECT * FROM products;
+SELECT * FROM customers;
+SELECT * FROM employees;
+
+Specific Data Extraction:
+SELECT 
+    EXTRACTVALUE(ProductData, '/Product/Name') AS Name,
+    EXTRACTVALUE(ProductData, '/Product/Category') AS Category
+FROM products;
+
+SELECT 
+    EXTRACTVALUE(CustomerData, '/Customer/Name') AS Name,
+    EXTRACTVALUE(CustomerData, '/Customer/Age') AS Age
+FROM customers;
+
+SELECT 
+    EXTRACTVALUE(EmployeeData, '/Employee/Name') AS Name,
+    EXTRACTVALUE(EmployeeData, '/Employee/Salary') AS Salary
+FROM employees;
+
+Update Records:
+UPDATE products 
+SET ProductData = XMLType('<Product><Name>Milk</Name><Category>Dairy</Category><Price>1.3</Price><Stock>60</Stock></Product>') 
+WHERE ProductID = 2;
+
+UPDATE customers 
+SET CustomerData = XMLType('<Customer><Name>Arun Kumar</Name><Age>31</Age><Address>123 Oak Street</Address></Customer>') 
+WHERE CustomerID = 1;
+
+UPDATE employees 
+SET EmployeeData = XMLType('<Employee><Name>Ravi</Name><Salary>55000</Salary><Gender>M</Gender></Employee>') 
+WHERE EmployeeID = 1;
+
+Delete Records:
+DELETE FROM products WHERE ProductID = 3;
+
+DELETE FROM customers WHERE CustomerID = 2;
+
+DELETE FROM employees WHERE EmployeeID = 3;
+
+Aggregate Functions:
+SELECT 
+    AVG(TO_NUMBER(EXTRACTVALUE(EmployeeData, '/Employee/Salary'))) AS average_salary,
+    SUM(TO_NUMBER(EXTRACTVALUE(EmployeeData, '/Employee/Salary'))) AS total_salary,
+    MIN(TO_NUMBER(EXTRACTVALUE(EmployeeData, '/Employee/Salary'))) AS min_salary,
+    MAX(TO_NUMBER(EXTRACTVALUE(EmployeeData, '/Employee/Salary'))) AS max_salary,
+    COUNT(*) AS total_employees
+FROM employees;
+
+Group By:
+SELECT 
+    EXTRACTVALUE(EmployeeData, '/Employee/Gender') AS Gender,
+    COUNT(*) AS Count
+FROM employees
+GROUP BY EXTRACTVALUE(EmployeeData, '/Employee/Gender');
+
+Joins:
+SELECT 
+    c.CustomerData,
+    e.EmployeeData
+FROM customers c
+INNER JOIN employees e ON c.CustomerID = e.EmployeeID;
+
+SELECT 
+    p.ProductData,
+    c.CustomerData
+FROM products p
+LEFT JOIN customers c ON p.ProductID = c.CustomerID;
+
+SELECT 
+    e.EmployeeData,
+    c.CustomerData
+FROM employees e
+RIGHT JOIN customers c ON e.EmployeeID = c.CustomerID;
+
+SELECT 
+    e.EmployeeData,
+    p.ProductData
+FROM employees e
+FULL OUTER JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Name') AS Employee_Name,
+    TO_NUMBER(EXTRACTVALUE(e.EmployeeData, '/Employee/Salary')) AS Salary,
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Gender') AS Gender,
+    EXTRACTVALUE(p.ProductData, '/Product/Name') AS Product_Name,
+    EXTRACTVALUE(p.ProductData, '/Product/Category') AS Category,
+    TO_NUMBER(EXTRACTVALUE(p.ProductData, '/Product/Price')) AS Price
+FROM 
+    employees e
+    JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Name') AS Employee_Name,
+    TO_NUMBER(EXTRACTVALUE(e.EmployeeData, '/Employee/Salary')) AS Salary,
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Gender') AS Gender,
+    EXTRACTVALUE(p.ProductData, '/Product/Name') AS Product_Name,
+    EXTRACTVALUE(p.ProductData, '/Product/Category') AS Category,
+    TO_NUMBER(EXTRACTVALUE(p.ProductData, '/Product/Price')) AS Price
+FROM 
+    employees e
+    LEFT JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Name') AS Employee_Name,
+    TO_NUMBER(EXTRACTVALUE(e.EmployeeData, '/Employee/Salary')) AS Salary,
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Gender') AS Gender,
+    EXTRACTVALUE(p.ProductData, '/Product/Name') AS Product_Name,
+    EXTRACTVALUE(p.ProductData, '/Product/Category') AS Category,
+    TO_NUMBER(EXTRACTVALUE(p.ProductData, '/Product/Price')) AS Price
+FROM 
+    employees e
+    RIGHT JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Name') AS Employee_Name,
+    TO_NUMBER(EXTRACTVALUE(e.EmployeeData, '/Employee/Salary')) AS Salary,
+    EXTRACTVALUE(e.EmployeeData, '/Employee/Gender') AS Gender,
+    EXTRACTVALUE(p.ProductData, '/Product/Name') AS Product_Name,
+    EXTRACTVALUE(p.ProductData, '/Product/Category') AS Category,
+    TO_NUMBER(EXTRACTVALUE(p.ProductData, '/Product/Price')) AS Price
+FROM 
+    employees e
+    FULL OUTER JOIN products p ON e.EmployeeID = p.ProductID;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Postgres-xml:
+-------------
+
+---------------------------------------------------------------------------------------
+psql-xml
+---------------------------------------------------------------------------------------
+
+Create Database:
+CREATE DATABASE shopping_mart_db;
+
+Connect to the database:
+\c shopping_mart_db
+
+Create Tables:
+CREATE TABLE products (
+    ProductID SERIAL PRIMARY KEY,
+    ProductData XML
+);
+
+CREATE TABLE customers (
+    CustomerID SERIAL PRIMARY KEY,
+    CustomerData XML
+);
+
+CREATE TABLE employees (
+    EmployeeID SERIAL PRIMARY KEY,
+    EmployeeData XML
+);
+
+Insert Records:
+INSERT INTO products (ProductData) VALUES 
+    (XMLPARSE(DOCUMENT '<Product><Name>Apple</Name><Category>Fruit</Category><Price>0.5</Price><Stock>100</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Milk</Name><Category>Dairy</Category><Price>1.2</Price><Stock>50</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Bread</Name><Category>Bakery</Category><Price>2.0</Price><Stock>30</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Chicken</Name><Category>Meat</Category><Price>5.0</Price><Stock>20</Stock></Product>')),
+    (XMLPARSE(DOCUMENT '<Product><Name>Broccoli</Name><Category>Vegetable</Category><Price>1.5</Price><Stock>40</Stock></Product>'));
+
+INSERT INTO customers (CustomerData) VALUES 
+    (XMLPARSE(DOCUMENT '<Customer><Name>Arun Kumar</Name><Age>30</Age><Address>123 Oak Street</Address></Customer>')),
+    (XMLPARSE(DOCUMENT '<Customer><Name>Deepa Rani</Name><Age>25</Age><Address>456 Pine Avenue</Address></Customer>')),
+    (XMLPARSE(DOCUMENT '<Customer><Name>Vijay Anand</Name><Age>35</Age><Address>789 Maple Road</Address></Customer>')),
+    (XMLPARSE(DOCUMENT '<Customer><Name>Priya Sharma</Name><Age>40</Age><Address>1010 Elm Lane</Address></Customer>'));
+
+INSERT INTO employees (EmployeeData) VALUES 
+    (XMLPARSE(DOCUMENT '<Employee><Name>Ravi</Name><Salary>50000</Salary><Gender>M</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Ram</Name><Salary>60000</Salary><Gender>M</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Sam</Name><Salary>70000</Salary><Gender>M</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Anbu</Name><Salary>80000</Salary><Gender>F</Gender></Employee>')),
+    (XMLPARSE(DOCUMENT '<Employee><Name>Mani</Name><Salary>75000</Salary><Gender>M</Gender></Employee>'));
+
+Select All Records:
+SELECT * FROM products;
+SELECT * FROM customers;
+SELECT * FROM employees;
+
+Specific Data Extraction:
+SELECT 
+    (xpath('/Product/Name/text()', ProductData))[1] AS Name,
+    (xpath('/Product/Category/text()', ProductData))[1] AS Category
+FROM products;
+
+SELECT 
+    (xpath('/Customer/Name/text()', CustomerData))[1] AS Name,
+    (xpath('/Customer/Age/text()', CustomerData))[1] AS Age
+FROM customers;
+
+SELECT 
+    (xpath('/Employee/Name/text()', EmployeeData))[1] AS Name,
+    (xpath('/Employee/Salary/text()', EmployeeData))[1] AS Salary
+FROM employees;
+
+Update Records:
+UPDATE products 
+SET ProductData = XML '<Product><Name>Milk</Name><Category>Dairy</Category><Price>1.3</Price><Stock>60</Stock></Product>' 
+WHERE ProductID = 2;
+
+UPDATE customers 
+SET CustomerData = XML '<Customer><Name>Arun Kumar</Name><Age>31</Age><Address>123 Oak Street</Address></Customer>' 
+WHERE CustomerID = 1;
+
+UPDATE employees 
+SET EmployeeData = XML '<Employee><Name>Ravi</Name><Salary>55000</Salary><Gender>M</Gender></Employee>' 
+WHERE EmployeeID = 1;
+
+Delete Records:
+DELETE FROM products WHERE ProductID = 3;
+
+DELETE FROM customers WHERE CustomerID = 2;
+
+DELETE FROM employees WHERE EmployeeID = 3;
+
+Aggregate Functions:
+SELECT 
+    AVG((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS average_salary,
+    SUM((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS total_salary,
+    MIN((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS min_salary,
+    MAX((xpath('/Employee/Salary/text()', EmployeeData))[1]::text::integer) AS max_salary,
+    COUNT(*) AS total_employees
+FROM employees;
+
+Group By:
+SELECT 
+    (xpath('/Employee/Gender/text()', EmployeeData))[1]::text AS Gender,
+    COUNT(*) AS Count
+FROM employees
+GROUP BY (xpath('/Employee/Gender/text()', EmployeeData))[1]::text;
+
+Joins:
+SELECT 
+    c.CustomerData,
+    e.EmployeeData
+FROM customers c
+INNER JOIN employees e ON c.CustomerID = e.EmployeeID;
+
+SELECT 
+    p.ProductData,
+    c.CustomerData
+FROM products p
+LEFT JOIN customers c ON p.ProductID = c.CustomerID;
+
+SELECT 
+    e.EmployeeData,
+    c.CustomerData
+FROM employees e
+RIGHT JOIN customers c ON e.EmployeeID = c.CustomerID;
+
+SELECT 
+    e.EmployeeData,
+    p.ProductData
+FROM employees e
+FULL OUTER JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    LEFT JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    RIGHT JOIN products p ON e.EmployeeID = p.ProductID;
+
+SELECT 
+    (xpath('/Employee/Name/text()', e.EmployeeData))[1]::text AS Employee_Name,
+    (xpath('/Employee/Salary/text()', e.EmployeeData))[1]::text::integer AS Salary,
+    (xpath('/Employee/Gender/text()', e.EmployeeData))[1]::text AS Gender,
+    (xpath('/Product/Name/text()', p.ProductData))[1]::text AS Product_Name,
+    (xpath('/Product/Category/text()', p.ProductData))[1]::text AS Category,
+    (xpath('/Product/Price/text()', p.ProductData))[1]::text::float AS Price
+FROM 
+    employees e
+    FULL OUTER JOIN products p ON e.EmployeeID = p.ProductID;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+php-Postgres:
+-------------
+
+config.php:
+<?php
+$host = 'localhost';
+$dbname = 'mydb';
+$user = 'myuser';
+$password = 'mypassword';
+
+try {
+    $dsn = "pgsql:host=$host;port=5432;dbname=$dbname;";
+    $pdo = new PDO($dsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
+?>
+
+register.php:
+<?php
+require 'config.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $email = $_POST['email'];
+
+    $sql = "INSERT INTO users (username, password, email) VALUES (:username, :password, :email)";
+    $stmt = $pdo->prepare($sql);
+
+    if ($stmt->execute(['username' => $username, 'password' => $password, 'email' => $email])) {
+        // Registration successful, redirect to login page
+        header("Location: login.php");
+        exit;
+    } else {
+        echo "Error: " . $stmt->errorCode();
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Register</h2>
+        <form method="POST" action="register.php">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <p class="mt-3">Already have an account? <a href="login.php">Login here</a></p>
+    </div>
+</body>
+</html>
+
+login.php:
+<?php
+require 'config.php';
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM users WHERE username = :username";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['username' => $username]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = $user['id'];
+        header("Location: profile.php");
+    } else {
+        echo "Invalid username or password.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Login</h2>
+        <form method="POST" action="login.php">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <p class="mt-3">Don't have an account? <a href="register.php">Register here</a></p>
+    </div>
+</body>
+</html>
+
